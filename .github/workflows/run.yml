@@ -45,6 +45,7 @@ jobs:
           archs1=(private ads ai apple apple-cn microsoft microsoft-cn games games-cn google youtube netflix github facebook twitter telegram onedrive media networktest tld-proxy proxy cn)
           archs2=(private ad ai apple apple-cn microsoft microsoft-cn games games-cn google youtube netflix github facebook twitter telegram onedrive proxy gfwlist cn-lite)
           archs3=(private ad ai apple apple-cn microsoft microsoft-cn games games-cn google youtube netflix github facebook twitter telegram onedrive proxy cn-lite)
+          archs4=(ai bilibili gfw apple-cn cn-lite)
 
           # Generate geosite-all.dat
           cd ./community/
@@ -78,6 +79,16 @@ jobs:
           
           curl -sSL "${domains_download_url}/fakeip-filter.list" | sed -e 's/DOMAIN,/full:/' -e 's/DOMAIN-SUFFIX,//' -e 's/DOMAIN-KEYWORD,/keyword:/' -e 's/DOMAIN-REGEX,/regexp:/' > ./mydata/fakeip-filter
           go run ./ --datapath=./mydata/ --outputname geosite-lite.dat
+
+          # Generate geosite-mini.dat
+          rm -f ./mydata/*
+          for arch3 in "${archs3[@]}"; do
+            curl -sSL "${domains_download_url}/${arch3}.list" | grep -E 'DOMAIN,|DOMAIN-SUFFIX,|DOMAIN-KEYWORD' | sed -e 's/DOMAIN,/full:/' -e 's/DOMAIN-SUFFIX,//' -e 's/DOMAIN-KEYWORD,/keyword:/' > "./mydata/${arch3}"
+          done
+          mv -f ./mydata/cn-lite ./mydata/cn
+          mv -f ./mydata/apple-cn ./mydata/apple
+
+          go run ./ --datapath=./mydata/ --outputname geosite-mini.dat
 
       - name: Move geodata files
         run: |
