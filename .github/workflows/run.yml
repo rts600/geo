@@ -34,7 +34,7 @@ jobs:
           path: community
 
       - name: Setup Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v5
         with:
           go-version-file: ./custom/go.mod
           cache-dependency-path: ./custom/go.sum
@@ -53,7 +53,6 @@ jobs:
           for arch1 in "${archs1[@]}"; do
             curl -sSL "${domains_download_url}/${arch1}.list" | grep -E '^DOMAIN,|^DOMAIN-SUFFIX,|^DOMAIN-KEYWORD,' | sed -e 's/^DOMAIN-SUFFIX,//' -e 's/^DOMAIN,/full:/' -e 's/^DOMAIN-KEYWORD,/keyword:/' > "./mydata/${arch1}"
           done
-          
           go run ./ --datapath=./mydata/ --outputname geosite-all.dat
 
           # Generate geosite-full.dat
@@ -66,7 +65,6 @@ jobs:
             curl -sSL "${domains_download_url}/${arch2}.list" | grep -E '^DOMAIN,|^DOMAIN-SUFFIX,|^DOMAIN-KEYWORD,' | sed -e 's/^DOMAIN-SUFFIX,//' -e 's/^DOMAIN,/full:/' -e 's/^DOMAIN-KEYWORD,/keyword:/' > "./mydata/${arch2}"
           done
           mv -f ./mydata/cn-lite ./mydata/cn
-          
           go run ./ --datapath=./mydata/ --outputname geosite.dat
           
           # Generate geosite-lite.dat
@@ -91,6 +89,7 @@ jobs:
           rm -f ./mydata/*
           for arch5 in "${archs5[@]}"; do
             curl -sSL "${domains_download_url}/${arch5}.list" | grep -E '^DOMAIN,|^DOMAIN-SUFFIX,|^DOMAIN-KEYWORD,' | sed -e 's/^DOMAIN-SUFFIX,//' -e 's/^DOMAIN,/full:/' -e 's/^DOMAIN-KEYWORD,/keyword:/' > "./mydata/${arch5}"
+          done
           mv -f ./mydata/cn-lite ./mydata/cn
           mv -f ./mydata/apple-cn ./mydata/apple
           mv -f ./mydata/global ./mydata/gfw
